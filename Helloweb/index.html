@@ -151,13 +151,11 @@
     </div>
 
     <script src="config.js"></script>
+    <script src="lunar.js"></script>
     <script>
-        // 新年期间跳转到新年页面 (12月25日 - 1月10日)
+        // 农历新年期间跳转到新年页面
         (function() {
-            var now = new Date();
-            var m = now.getMonth() + 1;
-            var d = now.getDate();
-            if ((m === 12 && d >= 25) || (m === 1 && d <= 10)) {
+            if (LunarNewYear.isDuringNewYear()) {
                 window.location.href = 'newyear.html';
                 return;
             }

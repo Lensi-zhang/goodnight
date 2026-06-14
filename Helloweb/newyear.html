@@ -154,13 +154,11 @@
         <button class="firework-btn" onclick="launchFireworks()">🎆 放烟花</button>
     </div>
 
+    <script src="lunar.js"></script>
     <script>
-        // 非新年期间跳转到首页 (12月25日 - 1月10日之外)
+        // 非农历新年期间跳转到首页
         (function() {
-            var now = new Date();
-            var m = now.getMonth() + 1;
-            var d = now.getDate();
-            if (!((m === 12 && d >= 25) || (m === 1 && d <= 10))) {
+            if (!LunarNewYear.isDuringNewYear()) {
                 window.location.href = 'index.html';
                 return;
             }
@@ -200,11 +198,8 @@
         }
 
         function updateCountdown() {
+            var target = LunarNewYear.getNearestNewYear();
             var now = new Date();
-            var target = new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0);
-            if (now.getMonth() === 0 && now.getDate() <= 1) {
-                target = new Date(now.getFullYear(), 0, 1, 0, 0, 0);
-            }
             var diff = target - now;
             var days = Math.floor(diff / (1000 * 60 * 60 * 24));
             var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
