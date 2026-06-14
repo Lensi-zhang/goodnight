@@ -1,0 +1,17 @@
+{
+    "name": "晚安问候",
+    "short_name": "晚安",
+    "description": "温馨的晚安问候网页，显示时间和天气",
+    "start_url": "/Helloweb/index.html",
+    "display": "standalone",
+    "background_color": "#667eea",
+    "theme_color": "#667eea",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ],
+    "lang": "zh-CN"
+}

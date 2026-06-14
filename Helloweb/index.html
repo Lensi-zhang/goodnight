@@ -3,66 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="温馨的晚安问候网页，显示实时时间和天气">
+    <meta name="theme-color" content="#667eea">
     <title>晚安问候</title>
+    <link rel="manifest" href="manifest.json">
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-tertiary: #888;
+            --btn-bg: #667eea;
+            --btn-hover: #764ba2;
+            --card-shadow: rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --card-bg: rgba(30, 30, 50, 0.9);
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-tertiary: #808080;
+            --btn-bg: #00d4ff;
+            --btn-hover: #0099cc;
+            --card-shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-gradient);
             font-family: 'Arial', sans-serif;
+            transition: background 0.3s ease;
         }
+
+        main {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--card-bg);
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px var(--card-shadow);
             animation: fadeIn 1s ease-out;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
+
         h1 {
-            color: #333;
+            color: var(--text-primary);
             font-size: 3rem;
             margin: 0;
-            transition: all 0.5s ease;
+            transition: color 0.3s ease, opacity 0.5s ease;
         }
+
         p {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 1.2rem;
             margin-top: 15px;
-            transition: all 0.5s ease;
+            transition: color 0.3s ease, opacity 0.5s ease;
             opacity: 0;
             transform: translateY(10px);
             animation: fadeInUp 0.8s ease-out 0.3s forwards;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         .time-container {
             margin-top: 20px;
             opacity: 0;
             transform: translateY(15px);
             animation: fadeInUp 0.8s ease-out 0.5s forwards;
         }
+
         .time-display {
             font-size: 1.5rem;
-            color: #555;
+            color: var(--text-primary);
             font-weight: bold;
-            transition: all 0.3s ease;
+            transition: color 0.3s ease;
         }
+
         .date-display {
             font-size: 1rem;
-            color: #888;
+            color: var(--text-tertiary);
             margin-top: 5px;
-            transition: all 0.3s ease;
+            transition: color 0.3s ease;
         }
+
         .weather-container {
             margin-top: 30px;
             padding: 20px;
@@ -72,21 +120,66 @@
             opacity: 0;
             transform: translateY(15px);
             animation: fadeInUp 0.8s ease-out 0.7s forwards;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
+
+        [data-theme="dark"] .weather-container {
+            background: rgba(50, 50, 70, 0.8);
+        }
+
         .weather-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            gap: 10px;
         }
+
         .location {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #333;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
         }
+
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .city-selector {
+            padding: 6px 10px;
+            border-radius: 15px;
+            border: 1px solid var(--text-tertiary);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .city-selector:focus {
+            outline: 2px solid var(--btn-bg);
+            outline-offset: 2px;
+        }
+
         .refresh-btn {
-            background: #667eea;
+            background: var(--btn-bg);
             color: white;
             border: none;
             padding: 8px 15px;
@@ -95,63 +188,143 @@
             font-size: 0.9rem;
             transition: background 0.3s ease;
         }
-        .refresh-btn:hover { background: #764ba2; }
+
+        .refresh-btn:hover {
+            background: var(--btn-hover);
+        }
+
+        .refresh-btn:focus,
+        .refresh-btn:focus-visible {
+            outline: 2px solid var(--btn-hover);
+            outline-offset: 2px;
+        }
+
         .weather-info {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 20px;
         }
-        .weather-icon { font-size: 3rem; }
+
+        .weather-icon {
+            font-size: 3rem;
+        }
+
         .temperature {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #333;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
         }
-        .weather-details { text-align: left; }
+
+        .weather-details {
+            text-align: left;
+        }
+
         .weather-desc {
             font-size: 1.1rem;
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 5px;
+            transition: color 0.3s ease;
         }
+
         .humidity-wind {
             font-size: 0.9rem;
-            color: #888;
+            color: var(--text-tertiary);
+            transition: color 0.3s ease;
         }
+
         @media (max-width: 768px) {
-            .container { padding: 20px; margin: 20px; }
-            h1 { font-size: 2rem; }
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .weather-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* 跳过链接 - 无障碍 */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--btn-bg);
+            color: white;
+            padding: 8px 16px;
+            z-index: 100;
+            text-decoration: none;
+            border-radius: 0 0 5px 0;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* 减少动画 - 无障碍 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>晚安</h1>
-        <p id="greeting">愿你有一个宁静美好的夜晚</p>
+    <a href="#main-content" class="skip-link">跳转到主要内容</a>
 
-        <div class="time-container">
-            <div class="time-display" id="time-display">--:--:--</div>
-            <div class="date-display" id="date-display">----年--月--日</div>
-        </div>
+    <main id="main-content" role="main">
+        <article class="container" role="article" aria-labelledby="greeting-title">
+            <header>
+                <h1 id="greeting-title">晚安</h1>
+                <p id="greeting" aria-live="polite">愿你有一个宁静美好的夜晚</p>
+            </header>
 
-        <div class="weather-container">
-            <div class="weather-header">
-                <div class="location" id="location">北京</div>
-                <button class="refresh-btn" onclick="getWeatherData()">刷新天气</button>
-            </div>
-            <div class="weather-info">
-                <div class="weather-icon" id="weather-icon">☁️</div>
-                <div class="temperature" id="temperature">22°C</div>
-                <div class="weather-details">
-                    <div class="weather-desc" id="weather-desc">多云</div>
-                    <div class="humidity-wind" id="humidity-wind">湿度: 55% | 风速: 2.1 m/s</div>
+            <section class="time-container" aria-label="当前时间">
+                <div class="time-display" id="time-display" role="timer" aria-label="时间">--:--:--</div>
+                <div class="date-display" id="date-display" aria-label="日期">----年--月--日</div>
+            </section>
+
+            <section class="weather-container" aria-label="天气信息">
+                <div class="weather-header">
+                    <div class="location" id="location" aria-label="城市">北京</div>
+                    <div class="header-controls">
+                        <label for="citySelector" class="visually-hidden">选择城市</label>
+                        <select id="citySelector" class="city-selector" aria-label="城市选择">
+                            <option value="">选择城市</option>
+                        </select>
+                        <button type="button" id="themeToggle" class="theme-toggle" aria-label="切换深色模式">🌙</button>
+                        <button type="button" class="refresh-btn" onclick="getWeatherData()" aria-label="刷新天气">刷新天气</button>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
+                <div class="weather-info">
+                    <div class="weather-icon" id="weather-icon" aria-hidden="true">☁️</div>
+                    <div class="temperature" id="temperature" aria-label="温度">22°C</div>
+                    <div class="weather-details">
+                        <div class="weather-desc" id="weather-desc">多云</div>
+                        <div class="humidity-wind" id="humidity-wind">湿度: 55% | 风速: 2.1 m/s</div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
 
     <script src="config.js"></script>
     <script src="lunar.js"></script>
+    <script src="darkmode.js"></script>
+    <script src="time.js"></script>
+    <script src="weather.js"></script>
     <script>
         // 农历新年或公历新年期间跳转到对应页面
         (function() {
@@ -170,191 +343,48 @@
             }
         })();
 
-        var amapApiKey = API_CONFIG.amapApiKey;
-        var weatherIcons = {
-            '晴': '☀️', '多云': '☁️', '阴': '☁️', '小雨': '🌦️', '中雨': '🌧️',
-            '大雨': '⛈️', '暴雨': '⛈️', '雷阵雨': '⛈️', '小雪': '❄️', '中雪': '❄️',
-            '大雪': '❄️', '雾': '🌫️', '霾': '🌫️', 'default': '☀️'
+        // 临时测试入口 - 手动跳转
+        window.openGregorianNewYear = function() {
+            window.location.href = 'gregorian.html';
         };
-        var currentWeatherData = null;
-        var regionMap = {
-            '华中地区': '武汉', '华北地区': '北京', '华东地区': '上海',
-            '华南地区': '广州', '西北地区': '西安', '西南地区': '成都', '东北地区': '沈阳'
+        window.openLunarNewYear = function() {
+            window.location.href = 'newyear.html';
         };
 
-        function getWeatherData() {
-            document.getElementById('temperature').textContent = '加载中...';
-            document.getElementById('weather-desc').textContent = '获取天气信息中...';
-            document.getElementById('humidity-wind').textContent = '';
-            getLocationByIP();
-        }
-
-        function getLocationByIP() {
-            var url = 'https://restapi.amap.com/v3/ip?key=' + amapApiKey;
-            var cb = 'cb_' + Date.now();
-            window[cb] = function(data) {
-                if (data.status === '1') {
-                    var city = data.city || data.province;
-                    if (regionMap[city]) city = regionMap[city];
-                    getWeatherByCity(city);
-                } else {
-                    document.getElementById('temperature').textContent = '定位失败';
-                    document.getElementById('weather-desc').textContent = data.info || '未知错误';
-                }
-                cleanup(cb);
-            };
-            createScript(url + '&output=jsonp&callback=' + cb, cb);
-        }
-
-        function createScript(url, cb) {
-            var s = document.createElement('script');
-            s.id = 'p-' + cb;
-            s.src = url;
-            s.onerror = function() {
-                document.getElementById('temperature').textContent = '请求失败';
-                document.getElementById('weather-desc').textContent = '无法连接到定位服务';
-                cleanup(cb);
-            };
-            document.head.appendChild(s);
-        }
-
-        function cleanup(cb) {
-            setTimeout(function() {
-                var el = document.getElementById('p-' + cb);
-                if (el && el.parentNode) el.parentNode.removeChild(el);
-                delete window[cb];
-            }, 0);
-        }
-
-        function getWeatherByCity(city) {
-            var url = 'https://restapi.amap.com/v3/geocode/geo?address=' + encodeURIComponent(city) + '&key=' + amapApiKey;
-            var cb = 'gc_' + Date.now();
-            window[cb] = function(data) {
-                if (data.status === '1' && data.geocodes && data.geocodes.length > 0) {
-                    var loc = data.geocodes[0].location;
-                    var parts = loc.split(',');
-                    getAmapWeather(parseFloat(parts[1]), parseFloat(parts[0]), city);
-                } else {
-                    document.getElementById('temperature').textContent = '获取失败';
-                    document.getElementById('weather-desc').textContent = '无法获取城市信息';
-                }
-                cleanup(cb);
-            };
-            createScript(url + '&output=jsonp&callback=' + cb, cb);
-        }
-
-        function getAmapWeather(lat, lon, city) {
-            var url = 'https://restapi.amap.com/v3/geocode/regeo?location=' + lon + ',' + lat + '&key=' + amapApiKey;
-            var cb = 'rg_' + Date.now();
-            window[cb] = function(data) {
-                if (data.status === '1' && data.regeocode && data.regeocode.addressComponent) {
-                    var ad = data.regeocode.addressComponent.adcode;
-                    if (ad) fetchWeather(ad, city);
-                    else mockWeather(city);
-                }
-                cleanup(cb);
-            };
-            createScript(url + '&output=jsonp&callback=' + cb, cb);
-        }
-
-        function fetchWeather(adcode, city) {
-            var url = 'https://restapi.amap.com/v3/weather/weatherInfo?city=' + adcode + '&key=' + amapApiKey;
-            var cb = 'w_' + Date.now();
-            window[cb] = function(data) {
-                if (data.status === '1' && data.lives && data.lives.length > 0) {
-                    var w = data.lives[0];
-                    updateWeather({ city: city, temperature: w.temperature, description: w.weather, humidity: w.humidity, windSpeed: w.windpower, weatherType: w.weather });
-                } else {
-                    mockWeather(city);
-                }
-                cleanup(cb);
-            };
-            createScript(url + '&output=jsonp&callback=' + cb, cb);
-        }
-
-        function mockWeather(city) {
-            updateWeather({ city: city || '未知位置', temperature: '--', description: '未知', humidity: '--', windSpeed: '--', weatherType: 'default' });
-        }
-
-        function updateWeather(d) {
-            currentWeatherData = d;
-            var c = document.querySelector('.weather-container');
-            c.style.transform = 'translateY(5px)';
-            c.style.opacity = '0.9';
-            setTimeout(function() {
-                document.getElementById('location').textContent = d.city;
-                document.getElementById('temperature').textContent = d.temperature + '°C';
-                document.getElementById('weather-icon').textContent = weatherIcons[d.weatherType] || weatherIcons.default;
-                document.getElementById('weather-desc').textContent = d.description;
-                document.getElementById('humidity-wind').textContent = '湿度: ' + d.humidity + '% | 风速: ' + d.windSpeed + ' 级';
-                c.style.transform = 'translateY(0)';
-                c.style.opacity = '1';
-            }, 200);
-            updateGreeting();
-        }
-
-        function updateGreeting() {
-            if (!currentWeatherData) return;
-            var city = currentWeatherData.city || '未知位置';
-            var weather = currentWeatherData.description || '未知天气';
-            var temp = currentWeatherData.temperature || '--';
-            var h = new Date().getHours();
-            var list = [
-                city + '的' + h + '点，' + weather + temp + '°C，愿你心情如阳光般温暖！',
-                weather + '的' + city + '，' + temp + '°C，' + h + '点的时光最适合享受生活！',
-                '在' + city + weather + '的' + h + '点，' + temp + '°C的温度，祝你有个愉快的一天！',
-                h + '点的' + city + '，' + weather + '宜人，' + temp + '°C正舒适，一切都会好起来的！',
-                '今天' + city + weather + '，' + temp + '°C，' + h + '点的你，最美最棒！'
-            ];
-            var el = document.getElementById('greeting');
-            el.style.opacity = '0';
-            setTimeout(function() {
-                el.textContent = list[Math.floor(Math.random() * list.length)];
-                el.style.opacity = '1';
-            }, 300);
-        }
-
-        function getGreetingByTime(h) {
-            if (h >= 0 && h < 6) return '夜深了';
-            if (h >= 6 && h < 12) return '早上好';
-            if (h >= 12 && h < 14) return '中午好';
-            if (h >= 14 && h < 18) return '下午好';
-            if (h >= 18 && h < 22) return '晚上好';
-            return '夜深了';
-        }
-
-        function updateTime() {
-            var now = new Date();
-            var h = now.getHours();
-            var greeting = getGreetingByTime(h);
-            var h1 = document.querySelector('h1');
-            if (h1.textContent !== greeting) {
-                h1.style.opacity = '0';
-                setTimeout(function() {
-                    h1.textContent = greeting;
-                    h1.style.opacity = '1';
-                }, 200);
-            }
-            var ts = (h < 10 ? '0' : '') + h + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ':' + (now.getSeconds() < 10 ? '0' : '') + now.getSeconds();
-            var ds = now.getFullYear() + '年' + (now.getMonth() + 1 < 10 ? '0' : '') + (now.getMonth() + 1) + '月' + (now.getDate() < 10 ? '0' : '') + now.getDate() + '日';
-            var td = document.getElementById('time-display');
-            var dd = document.getElementById('date-display');
-            td.style.opacity = '0.7';
-            setTimeout(function() { td.textContent = ts; td.style.opacity = '1'; }, 50);
-            if (dd.textContent !== ds) {
-                dd.style.opacity = '0';
-                setTimeout(function() { dd.textContent = ds; dd.style.opacity = '1'; }, 200);
-            }
-        }
-
-        window.onload = function() {
-            updateTime();
-            setInterval(updateTime, 1000);
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            DarkModeModule.init();
+            TimeModule.start();
+            initCitySelector();
             getWeatherData();
-            setTimeout(function() {
-                updateWeather({ city: '北京', temperature: '22', description: '多云', humidity: '55', windSpeed: '2', weatherType: '多云' });
-            }, 500);
-        };
+        });
+
+        // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+        }
     </script>
+
+    <style>
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
 </body>
 </html>
