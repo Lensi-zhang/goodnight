@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新年快乐</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             min-height: 100vh;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
@@ -16,23 +17,30 @@
             align-items: center;
             flex-direction: column;
         }
+
+        /* 星空容器 - GPU加速 */
         .stars {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
+            contain: layout paint;
         }
+
         .star {
             position: absolute;
             background: #fff;
             border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
+            will-change: opacity;
+            animation: twinkle 2s ease-in-out infinite alternate;
         }
+
         @keyframes twinkle {
             from { opacity: 0.3; }
             to { opacity: 1; }
         }
+
         .container {
             position: relative;
             z-index: 10;
@@ -41,29 +49,37 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             backdrop-filter: blur(10px);
+            contain: layout style;
         }
+
         h1 {
             font-size: 4rem;
             color: #fff;
             text-shadow: 0 0 20px #00d4ff, 0 0 40px #0099cc;
             margin: 20px 0;
             animation: glow 2s ease-in-out infinite alternate;
+            will-change: text-shadow;
         }
+
         @keyframes glow {
             from { text-shadow: 0 0 20px #00d4ff, 0 0 40px #0099cc; }
             to { text-shadow: 0 0 30px #00ffcc, 0 0 60px #00aaff, 0 0 80px #0066ff; }
         }
+
         .year-display {
             font-size: 6rem;
             color: #00d4ff;
             font-weight: bold;
             margin: 20px 0;
             animation: pulse 2s ease-in-out infinite;
+            will-change: transform;
         }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
+
         .countdown {
             display: flex;
             justify-content: center;
@@ -71,6 +87,7 @@
             margin: 30px 0;
             flex-wrap: wrap;
         }
+
         .countdown-item {
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 153, 204, 0.3));
             border: 2px solid #00d4ff;
@@ -78,17 +95,21 @@
             padding: 15px 20px;
             min-width: 80px;
             box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            contain: layout style;
         }
+
         .countdown-item .number {
             font-size: 2.5rem;
             color: #00ffcc;
             font-weight: bold;
         }
+
         .countdown-item .label {
             font-size: 0.9rem;
             color: #aaddff;
             margin-top: 5px;
         }
+
         .greeting {
             color: #fff;
             font-size: 1.3rem;
@@ -98,6 +119,7 @@
             padding: 0 20px;
             transition: opacity 0.5s;
         }
+
         .celebrate-btn {
             margin-top: 20px;
             background: linear-gradient(135deg, #00d4ff, #0099cc);
@@ -107,42 +129,64 @@
             font-size: 1.1rem;
             border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+            will-change: transform;
         }
+
         .celebrate-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
         }
-        /* 彩带 */
+
+        .celebrate-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 彩带 - GPU加速 */
         .confetti {
             position: fixed;
             width: 10px;
             height: 10px;
             animation: fall 3s linear forwards;
             z-index: 100;
+            will-change: transform, opacity;
+            contain: layout style;
         }
+
         @keyframes fall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+            0% { transform: translate3d(0, -100vh, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate3d(0, 100vh, 0) rotate(720deg); opacity: 0; }
         }
-        /* 气球 */
+
+        /* 气球 - GPU加速 */
         .balloon {
             position: fixed;
             font-size: 3rem;
             animation: float 4s ease-in forwards;
             z-index: 90;
+            will-change: transform, opacity;
+            contain: layout style;
         }
+
         @keyframes float {
-            0% { transform: translateY(100vh) rotate(-5deg); opacity: 1; }
-            50% { transform: translateY(50vh) rotate(5deg); opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(-5deg); opacity: 0; }
+            0% { transform: translate3d(0, 100vh, 0) rotate(-5deg); opacity: 1; }
+            50% { transform: translate3d(0, 50vh, 0) rotate(5deg); opacity: 1; }
+            100% { transform: translate3d(0, -100vh, 0) rotate(-5deg); opacity: 0; }
         }
+
         @media (max-width: 600px) {
             h1 { font-size: 2.5rem; }
             .year-display { font-size: 4rem; }
             .countdown-item .number { font-size: 1.8rem; }
             .countdown-item { padding: 10px 15px; min-width: 65px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 </head>
@@ -154,121 +198,132 @@
         <div class="year-display" id="yearDisplay"></div>
         <div class="countdown" id="countdown"></div>
         <div class="greeting" id="greeting"></div>
-        <button class="celebrate-btn" onclick="celebrate()">🎉 庆祝新年</button>
+        <button class="celebrate-btn" id="celebrateBtn">🎉 庆祝新年</button>
     </div>
 
     <script>
-        var greetings = [
-            "新年新气象，万事皆如意！",
-            "愿新的一年，所求皆所愿，所行化坦途！",
-            "岁岁常欢愉，年年皆胜意！",
-            "愿你新年快乐，阖家幸福，万事顺遂！",
-            "新年到，福气到，愿你好运连连！",
-            "新的一年，愿你心中有爱，眼中有光！",
-            "新年伊始，喜乐无限！",
-            "愿新年胜旧年，欢愉且胜意！",
-            "2025，愿一切美好如期而至！",
-            "新年快乐，未来可期！"
-        ];
+        (function() {
+            const greetings = [
+                "新年新气象，万事皆如意！",
+                "愿新的一年，所求皆所愿，所行化坦途！",
+                "岁岁常欢愉，年年皆胜意！",
+                "愿你新年快乐，阖家幸福，万事顺遂！",
+                "新年到，福气到，愿你好运连连！",
+                "新的一年，愿你心中有爱，眼中有光！",
+                "新年伊始，喜乐无限！",
+                "愿新年胜旧年，欢愉且胜意！",
+                "2025，愿一切美好如期而至！",
+                "新年快乐，未来可期！"
+            ];
 
-        function createStars() {
-            var c = document.getElementById('stars');
-            for (var i = 0; i < 100; i++) {
-                var s = document.createElement('div');
-                s.className = 'star';
-                var size = Math.random() * 3 + 1;
-                s.style.width = size + 'px';
-                s.style.height = size + 'px';
-                s.style.left = Math.random() * 100 + '%';
-                s.style.top = Math.random() * 100 + '%';
-                s.style.animationDelay = Math.random() * 2 + 's';
-                c.appendChild(s);
+            // 减少星星数量从100到50，提升性能
+            const STAR_COUNT = 50;
+            const CONFETTI_COUNT = 30;
+            const BALLOON_COUNT = 10;
+
+            function createStars() {
+                const c = document.getElementById('stars');
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    const s = document.createElement('div');
+                    s.className = 'star';
+                    const size = Math.random() * 2 + 1;
+                    s.style.cssText = `
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${Math.random() * 100}%;
+                        top: ${Math.random() * 100}%;
+                        animation-delay: ${Math.random() * 2}s;
+                    `;
+                    fragment.appendChild(s);
+                }
+                c.appendChild(fragment);
             }
-        }
 
-        function updateCountdown() {
-            var now = new Date();
-            var nextYear = now.getFullYear();
-            if (now.getMonth() === 11 && now.getDate() === 31) {
-                // 跨年夜
-                nextYear = now.getFullYear() + 1;
+            function updateCountdown() {
+                const now = new Date();
+                let nextYear = now.getFullYear();
+                if (now.getMonth() === 11 && now.getDate() === 31) {
+                    nextYear = now.getFullYear() + 1;
+                }
+                let target = new Date(nextYear, 0, 1, 0, 0, 0);
+                if (now >= target) {
+                    target = new Date(nextYear + 1, 0, 1, 0, 0, 0);
+                }
+                const diff = target - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('countdown').innerHTML =
+                    `<div class="countdown-item"><div class="number">${days}</div><div class="label">天</div></div>` +
+                    `<div class="countdown-item"><div class="number">${hours}</div><div class="label">时</div></div>` +
+                    `<div class="countdown-item"><div class="number">${mins}</div><div class="label">分</div></div>` +
+                    `<div class="countdown-item"><div class="number">${secs}</div><div class="label">秒</div></div>`;
+                document.getElementById('yearDisplay').textContent = target.getFullYear();
+                document.title = `新年倒计时 - 还有${days}天`;
             }
-            var target = new Date(nextYear, 0, 1, 0, 0, 0);
-            if (now >= target) {
-                target = new Date(nextYear + 1, 0, 1, 0, 0, 0);
+
+            function updateGreeting() {
+                const el = document.getElementById('greeting');
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.textContent = greetings[Math.floor(Math.random() * greetings.length)];
+                    el.style.opacity = '1';
+                }, 300);
             }
-            var diff = target - now;
-            var days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            var secs = Math.floor((diff % (1000 * 60)) / 1000);
-            document.getElementById('countdown').innerHTML =
-                '<div class="countdown-item"><div class="number">' + days + '</div><div class="label">天</div></div>' +
-                '<div class="countdown-item"><div class="number">' + hours + '</div><div class="label">时</div></div>' +
-                '<div class="countdown-item"><div class="number">' + mins + '</div><div class="label">分</div></div>' +
-                '<div class="countdown-item"><div class="number">' + secs + '</div><div class="label">秒</div></div>';
-            document.getElementById('yearDisplay').textContent = target.getFullYear();
-            document.title = '新年倒计时 - 还有' + days + '天';
-        }
 
-        function updateGreeting() {
-            var el = document.getElementById('greeting');
-            el.style.opacity = '0';
-            setTimeout(function() {
-                el.textContent = greetings[Math.floor(Math.random() * greetings.length)];
-                el.style.opacity = '1';
-            }, 300);
-        }
-
-        // 彩带和礼花效果
-        function celebrate() {
-            createConfetti();
-            createBalloons();
-        }
-
-        function createConfetti() {
-            var colors = ['#ff0000', '#ffaa00', '#00ff00', '#0099ff', '#ff00ff', '#00ffff', '#ffff00'];
-            for (var i = 0; i < 50; i++) {
-                (function(i) {
-                    setTimeout(function() {
-                        var confetti = document.createElement('div');
-                        confetti.className = 'confetti';
-                        confetti.style.left = Math.random() * 100 + '%';
-                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                        confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
-                        confetti.style.width = (Math.random() * 10 + 5) + 'px';
-                        confetti.style.height = (Math.random() * 10 + 5) + 'px';
-                        document.body.appendChild(confetti);
-                        setTimeout(function() { confetti.remove(); }, 4000);
-                    }, i * 50);
-                })(i);
+            function celebrate() {
+                createConfetti();
+                createBalloons();
             }
-        }
 
-        function createBalloons() {
-            var emojis = ['🎈', '🎉', '🎊', '✨', '💫', '⭐'];
-            for (var i = 0; i < 15; i++) {
-                (function(i) {
-                    setTimeout(function() {
-                        var balloon = document.createElement('div');
-                        balloon.className = 'balloon';
-                        balloon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                        balloon.style.left = Math.random() * 100 + '%';
-                        balloon.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                        document.body.appendChild(balloon);
-                        setTimeout(function() { balloon.remove(); }, 5000);
-                    }, i * 200);
-                })(i);
+            function createConfetti() {
+                const colors = ['#ff0000', '#ffaa00', '#00ff00', '#0099ff', '#ff00ff', '#00ffff', '#ffff00'];
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < CONFETTI_COUNT; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    const size = Math.random() * 8 + 5;
+                    confetti.style.cssText = `
+                        left: ${Math.random() * 100}%;
+                        background-color: ${colors[Math.floor(Math.random() * colors.length)]};
+                        animation-duration: ${Math.random() * 2 + 2}s;
+                        width: ${size}px;
+                        height: ${size}px;
+                    `;
+                    fragment.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }
+                document.body.appendChild(fragment);
             }
-        }
 
-        createStars();
-        updateCountdown();
-        updateGreeting();
-        setInterval(updateCountdown, 1000);
-        setInterval(updateGreeting, 5000);
-        setTimeout(celebrate, 1000);
+            function createBalloons() {
+                const emojis = ['🎈', '🎉', '🎊', '✨', '💫', '⭐'];
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < BALLOON_COUNT; i++) {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'balloon';
+                    balloon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    balloon.style.cssText = `
+                        left: ${Math.random() * 100}%;
+                        animation-duration: ${Math.random() * 2 + 3}s;
+                    `;
+                    fragment.appendChild(balloon);
+                    setTimeout(() => balloon.remove(), 5000);
+                }
+                document.body.appendChild(fragment);
+            }
+
+            document.getElementById('celebrateBtn').addEventListener('click', celebrate);
+
+            createStars();
+            updateCountdown();
+            updateGreeting();
+            setInterval(updateCountdown, 1000);
+            setInterval(updateGreeting, 5000);
+            setTimeout(celebrate, 1000);
+        })();
     </script>
 </body>
 </html>
