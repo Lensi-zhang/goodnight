@@ -183,9 +183,10 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
-        // 高德地图API Key
-        const amapApiKey = 'cebd2ed5a03641dd6bbe701596a48da3';
+        // 从配置文件读取API Key
+        const amapApiKey = API_CONFIG.amapApiKey;
         
         // 天气图标映射
         const weatherIcons = {
@@ -456,9 +457,9 @@
             const hour = new Date().getHours();
             
             // 星火大数据API调用（使用HTTP POST流式响应）
-            const apiKey = '2f3d88b9c7a5e52f05d2f36241db2d08'; // 用户提供的API密钥
-            const appId = '56cc1a3a';   // 用户提供的应用ID
-            const apiSecret = 'ODVhMmMyYmVlZTFkYjYwNzlkNWUxZTYz'; // 用户提供的API密钥
+            // 配置已从 config.js 加载
+            // 从配置文件读取星火API配置
+            const sparkConfig = API_CONFIG.spark;
             const prompt = `生成一句简短优美的问候语或励志语录，包含以下元素：当前在${city}，天气${weather}，温度${temperature}°C，时间${hour}点左右。语录要简洁、温暖、有正能量。`;
             
             // 使用模拟数据生成励志语录

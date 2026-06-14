@@ -23,6 +23,9 @@ lerna-debug.log*
 *.swo
 *~
 
+# 忽略API配置文件（包含密钥）
+config.js
+
 # 忽略操作系统文件
 .DS_Store
 Thumbs.db
