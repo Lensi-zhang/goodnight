@@ -153,8 +153,17 @@
     <script src="config.js"></script>
     <script src="lunar.js"></script>
     <script>
-        // 农历新年期间跳转到新年页面
+        // 农历新年或公历新年期间跳转到对应页面
         (function() {
+            var now = new Date();
+            var m = now.getMonth() + 1;
+            var d = now.getDate();
+            // 公历新年：12月31日 - 1月1日
+            if ((m === 12 && d === 31) || (m === 1 && d === 1)) {
+                window.location.href = 'gregorian.html';
+                return;
+            }
+            // 农历新年：新年前7天 ~ 新年后15天
             if (LunarNewYear.isDuringNewYear()) {
                 window.location.href = 'newyear.html';
                 return;

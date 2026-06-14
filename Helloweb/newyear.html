@@ -151,7 +151,7 @@
         <div class="zodiac" id="zodiac"></div>
         <div class="countdown" id="countdown"></div>
         <div class="greeting" id="greeting"></div>
-        <button class="firework-btn" onclick="launchFireworks()">🎆 放烟花</button>
+        <button class="firework-btn" onclick="celebrate()">🧨 庆祝新年</button>
     </div>
 
     <script src="lunar.js"></script>
@@ -290,6 +290,37 @@
             setTimeout(function() { b.remove(); }, 4000);
         }
 
+        // 爆竹音效
+        function playFirecrackerSound() {
+            try {
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                for (var i = 0; i < 10; i++) {
+                    (function(i) {
+                        setTimeout(function() {
+                            var oscillator = audioCtx.createOscillator();
+                            var gainNode = audioCtx.createGain();
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioCtx.destination);
+                            oscillator.type = 'square';
+                            oscillator.frequency.setValueAtTime(200 + Math.random() * 800, audioCtx.currentTime);
+                            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                            oscillator.start(audioCtx.currentTime);
+                            oscillator.stop(audioCtx.currentTime + 0.1);
+                        }, i * 100);
+                    })(i);
+                }
+            } catch(e) {
+                console.log('音频播放失败');
+            }
+        }
+
+        // 庆祝函数：烟花 + 爆竹声
+        function celebrate() {
+            launchFireworks();
+            playFirecrackerSound();
+        }
+
         createStars();
         updateCountdown();
         updateGreeting();
@@ -297,7 +328,7 @@
         setInterval(updateCountdown, 1000);
         setInterval(updateGreeting, 5000);
         setInterval(launchBaozhu, 2000);
-        setTimeout(launchFireworks, 1000);
+        setTimeout(celebrate, 1000);
     </script>
 </body>
 </html>
