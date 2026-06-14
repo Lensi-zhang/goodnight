@@ -147,7 +147,7 @@
 
     <div class="container">
         <div class="lantern">🏮</div>
-        <h1 id="title">新年快乐</h1>
+        <h1>新年快乐</h1>
         <div class="zodiac" id="zodiac"></div>
         <div class="countdown" id="countdown"></div>
         <div class="greeting" id="greeting"></div>
@@ -155,79 +155,83 @@
     </div>
 
     <script>
-        const greetings = [
+        // 非新年期间跳转到首页 (12月25日 - 1月10日之外)
+        (function() {
+            var now = new Date();
+            var m = now.getMonth() + 1;
+            var d = now.getDate();
+            if (!((m === 12 && d >= 25) || (m === 1 && d <= 10))) {
+                window.location.href = 'index.html';
+                return;
+            }
+        })();
+
+        var greetings = [
             "新年新气象，万事皆如意！",
             "愿新的一年，所求皆所愿，所行化坦途！",
             "爆竹声中一岁除，春风送暖入屠苏！",
             "岁岁常欢愉，年年皆胜意！",
             "愿你新年快乐，阖家幸福，万事顺遂！",
             "新年到，福气到，愿你好运连连！",
-            "金蛇迎春，福满人间！",
             "新年伊始，喜乐无限！",
             "愿新年胜旧年，欢愉且胜意！",
-            "新的一年，愿你心中有爱，眼中有光！"
+            "新的一年，愿你心中有爱，眼中有光！",
+            "金蛇迎春，福满人间！"
         ];
 
         function createStars() {
-            const container = document.getElementById('stars');
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 3 + 1;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                container.appendChild(star);
+            var c = document.getElementById('stars');
+            for (var i = 0; i < 100; i++) {
+                var s = document.createElement('div');
+                s.className = 'star';
+                var size = Math.random() * 3 + 1;
+                s.style.width = size + 'px';
+                s.style.height = size + 'px';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.animationDelay = Math.random() * 2 + 's';
+                c.appendChild(s);
             }
         }
 
         function getZodiac(year) {
-            const animals = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
-            return animals[(year - 4) % 12];
+            var a = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+            return a[(year - 4) % 12];
         }
 
         function updateCountdown() {
-            const now = new Date();
-            const nextYear = now.getFullYear() + (now.getMonth() === 11 && now.getDate() === 31 ? 1 : (now.getMonth() === 0 && now.getDate() === 1 ? 1 : (now.getMonth() >= 1 || (now.getMonth() === 0 && now.getDate() >= 1) ? 1 : 0)));
-            let target = new Date(nextYear, 0, 1, 0, 0, 0);
-
-            if (now >= target) {
-                target = new Date(nextYear + 1, 0, 1, 0, 0, 0);
+            var now = new Date();
+            var target = new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0);
+            if (now.getMonth() === 0 && now.getDate() <= 1) {
+                target = new Date(now.getFullYear(), 0, 1, 0, 0, 0);
             }
-
-            const diff = target - now;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            const countdown = document.getElementById('countdown');
-            countdown.innerHTML = `
-                <div class="countdown-item"><div class="number">${days}</div><div class="label">天</div></div>
-                <div class="countdown-item"><div class="number">${hours}</div><div class="label">时</div></div>
-                <div class="countdown-item"><div class="number">${minutes}</div><div class="label">分</div></div>
-                <div class="countdown-item"><div class="number">${seconds}</div><div class="label">秒</div></div>
-            `;
-
-            document.getElementById('zodiac').textContent = `${target.getFullYear()}年 乙巳蛇年`;
-            document.title = `新年倒计时 - 还有${days}天`;
+            var diff = target - now;
+            var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            var secs = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById('countdown').innerHTML =
+                '<div class="countdown-item"><div class="number">' + days + '</div><div class="label">天</div></div>' +
+                '<div class="countdown-item"><div class="number">' + hours + '</div><div class="label">时</div></div>' +
+                '<div class="countdown-item"><div class="number">' + mins + '</div><div class="label">分</div></div>' +
+                '<div class="countdown-item"><div class="number">' + secs + '</div><div class="label">秒</div></div>';
+            document.getElementById('zodiac').textContent = target.getFullYear() + '年 ' + getZodiac(target.getFullYear()) + '年';
+            document.title = '新年倒计时 - 还有' + days + '天';
         }
 
         function updateGreeting() {
-            const el = document.getElementById('greeting');
+            var el = document.getElementById('greeting');
             el.style.opacity = '0';
-            setTimeout(() => {
+            setTimeout(function() {
                 el.textContent = greetings[Math.floor(Math.random() * greetings.length)];
                 el.style.opacity = '1';
             }, 300);
         }
 
-        // Canvas 烟花
-        const canvas = document.getElementById('fireworkCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+        // 烟花
+        var canvas = document.getElementById('fireworkCanvas');
+        var ctx = canvas.getContext('2d');
+        var particles = [];
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -236,71 +240,61 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.vx = (Math.random() - 0.5) * 8;
-                this.vy = (Math.random() - 0.5) * 8;
-                this.alpha = 1;
-                this.size = Math.random() * 3 + 1;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vy += 0.05;
-                this.alpha -= 0.015;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
+        function Particle(x, y, color) {
+            this.x = x; this.y = y; this.color = color;
+            this.vx = (Math.random() - 0.5) * 8;
+            this.vy = (Math.random() - 0.5) * 8;
+            this.alpha = 1;
+            this.size = Math.random() * 3 + 1;
         }
+        Particle.prototype.update = function() {
+            this.x += this.vx; this.y += this.vy;
+            this.vy += 0.05; this.alpha -= 0.015;
+        };
+        Particle.prototype.draw = function() {
+            ctx.save(); ctx.globalAlpha = this.alpha;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill(); ctx.restore();
+        };
 
         function createFirework(x, y) {
-            const colors = ['#ff0000','#ffaa00','#ffff00','#ff6600','#ff44ff','#00ffaa','#ffffff'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 80; i++) {
-                particles.push(new Particle(x, y, color));
-            }
+            var colors = ['#ff0000','#ffaa00','#ffff00','#ff6600','#ff44ff','#00ffaa','#ffffff'];
+            var color = colors[Math.floor(Math.random() * colors.length)];
+            for (var i = 0; i < 80; i++) particles.push(new Particle(x, y, color));
         }
 
         function animateFireworks() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles = particles.filter(p => p.alpha > 0);
-            particles.forEach(p => { p.update(); p.draw(); });
+            particles = particles.filter(function(p) { return p.alpha > 0; });
+            particles.forEach(function(p) { p.update(); p.draw(); });
             requestAnimationFrame(animateFireworks);
         }
 
         function launchFireworks() {
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    createFirework(
-                        Math.random() * canvas.width * 0.6 + canvas.width * 0.2,
-                        Math.random() * canvas.height * 0.5 + canvas.height * 0.1
-                    );
-                }, i * 300);
+            for (var i = 0; i < 5; i++) {
+                (function(i) {
+                    setTimeout(function() {
+                        createFirework(
+                            Math.random() * canvas.width * 0.6 + canvas.width * 0.2,
+                            Math.random() * canvas.height * 0.5 + canvas.height * 0.1
+                        );
+                    }, i * 300);
+                })(i);
             }
         }
 
-        // 鞭炮效果
         function launchBaozhu() {
-            const baozhu = document.createElement('div');
-            baozhu.className = 'baozhu';
-            baozhu.textContent = Math.random() > 0.5 ? '🧨' : '🎇';
-            baozhu.style.left = Math.random() * 100 + '%';
-            baozhu.style.animationDuration = (Math.random() * 2 + 2) + 's';
-            document.body.appendChild(baozhu);
-            setTimeout(() => baozhu.remove(), 4000);
+            var b = document.createElement('div');
+            b.className = 'baozhu';
+            b.textContent = Math.random() > 0.5 ? '🧨' : '🎇';
+            b.style.left = Math.random() * 100 + '%';
+            b.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.body.appendChild(b);
+            setTimeout(function() { b.remove(); }, 4000);
         }
 
-        // 初始化
         createStars();
         updateCountdown();
         updateGreeting();
@@ -308,8 +302,6 @@
         setInterval(updateCountdown, 1000);
         setInterval(updateGreeting, 5000);
         setInterval(launchBaozhu, 2000);
-
-        // 页面加载时自动放一轮烟花
         setTimeout(launchFireworks, 1000);
     </script>
 </body>
