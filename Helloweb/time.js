@@ -28,6 +28,25 @@ const TimeModule = {
         return `${year}年${toCN(now.getMonth() + 1)}月${toCN(now.getDate())}日`;
     },
 
+    // 二十四节气（按常用日期估算，误差 1 天以内）
+    getSolarTerm(now) {
+        const terms = [
+            ['小寒', 1, 6], ['大寒', 1, 20], ['立春', 2, 4], ['雨水', 2, 19],
+            ['惊蛰', 3, 6], ['春分', 3, 21], ['清明', 4, 5], ['谷雨', 4, 20],
+            ['立夏', 5, 6], ['小满', 5, 21], ['芒种', 6, 6], ['夏至', 6, 21],
+            ['小暑', 7, 7], ['大暑', 7, 23], ['立秋', 8, 8], ['处暑', 8, 23],
+            ['白露', 9, 8], ['秋分', 9, 23], ['寒露', 10, 8], ['霜降', 10, 23],
+            ['立冬', 11, 7], ['小雪', 11, 22], ['大雪', 12, 7], ['冬至', 12, 22]
+        ];
+        const md = (now.getMonth() + 1) * 100 + now.getDate();
+        let current = '冬至';
+        for (const [name, month, day] of terms) {
+            if (month * 100 + day <= md) current = name;
+            else break;
+        }
+        return current;
+    },
+
     update() {
         const now = new Date();
         const h = now.getHours();
@@ -57,6 +76,12 @@ const TimeModule = {
                 dd.textContent = this.formatDate(now);
                 dd.style.opacity = '1';
             }, 200);
+        }
+
+        const st = document.getElementById('solar-term');
+        const term = this.getSolarTerm(now);
+        if (st && st.textContent !== term) {
+            st.textContent = term;
         }
     },
 

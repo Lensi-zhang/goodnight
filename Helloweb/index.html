@@ -66,6 +66,11 @@
             -webkit-text-size-adjust: 100%;
         }
 
+        ::selection {
+            background: var(--vermilion);
+            color: var(--paper);
+        }
+
         body {
             position: relative;
             min-height: 100vh;
@@ -374,7 +379,7 @@
 
         /* 主视觉 */
         .hero {
-            padding-top: clamp(2.8rem, 7vh, 5rem);
+            padding-top: clamp(2.4rem, 5.2vh, 4rem);
         }
 
         .eyebrow-row {
@@ -479,6 +484,13 @@
             transition: color 0.5s var(--ease);
         }
 
+        .date-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.45rem 0.95rem;
+        }
+
         .date-display {
             font-family: var(--font-serif);
             font-size: 0.72rem;
@@ -488,9 +500,65 @@
             transition: color 0.5s var(--ease), opacity 0.35s var(--ease);
         }
 
+        .solar-term {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-serif);
+            font-size: 0.66rem;
+            letter-spacing: 0.26em;
+            color: var(--vermilion);
+        }
+
+        .solar-term::before {
+            content: "";
+            width: 4px;
+            height: 4px;
+            background: var(--vermilion);
+            opacity: 0.65;
+        }
+
+        /* 今日诗句 */
+        .daily-verse {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.35rem 0.95rem;
+            margin-top: clamp(1.5rem, 3.4vh, 2.1rem);
+            max-width: 42rem;
+            font-family: var(--font-serif);
+            animation: inkIn 1.1s var(--ease) 0.76s backwards;
+        }
+
+        .daily-verse .quote {
+            font-size: 0.82rem;
+            font-weight: 400;
+            line-height: 1.9;
+            letter-spacing: 0.12em;
+            color: var(--ink-soft);
+            transition: color 0.5s var(--ease);
+        }
+
+        .daily-verse .quote::before {
+            content: "";
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            margin-right: 0.68rem;
+            background: var(--vermilion);
+            vertical-align: 0.12em;
+        }
+
+        .daily-verse .from {
+            font-size: 0.6rem;
+            letter-spacing: 0.22em;
+            color: var(--ink-mute);
+            transition: color 0.5s var(--ease);
+        }
+
         /* 天气题栏 */
         .weather-container {
-            margin-top: clamp(2.2rem, 6vh, 3.6rem);
+            margin-top: clamp(1.6rem, 4.2vh, 2.9rem);
             padding: 1.5rem 0 1.3rem;
             border-top: 1px solid var(--line);
             border-bottom: 1px solid var(--line);
@@ -579,18 +647,33 @@
         }
 
         .weather-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 26px;
-            height: 26px;
-            font-size: 1.05rem;
-            filter: grayscale(1) sepia(0.18) contrast(0.85);
-            opacity: 0.8;
+            width: 30px;
+            height: 30px;
+            color: var(--ink-soft);
+            opacity: 0.72;
+            transition: color 0.5s var(--ease), opacity 0.4s var(--ease);
         }
 
-        :root[data-theme="dark"] .weather-icon {
-            filter: grayscale(0.7) brightness(1.4) sepia(0.3);
+        .weather-icon svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            animation: iconIn 0.5s var(--ease);
+        }
+
+        @keyframes iconIn {
+            from {
+                opacity: 0;
+                transform: scale(0.86);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .weather-container:hover .weather-icon {
+            opacity: 1;
         }
 
         .temperature {
@@ -636,18 +719,58 @@
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            margin-top: clamp(1.6rem, 4vh, 2.3rem);
+            margin-top: clamp(1.2rem, 3.2vh, 2rem);
             font-family: var(--font-serif);
             font-size: 0.64rem;
             letter-spacing: 0.3em;
             color: var(--ink-mute);
         }
 
-        .page-foot span:last-child {
+        .page-foot > span:last-child {
             font-family: var(--font-sans);
             font-size: 0.56rem;
             letter-spacing: 0.3em;
             text-transform: uppercase;
+        }
+
+        .foot-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .foot-links a {
+            position: relative;
+            color: var(--ink-mute);
+            text-decoration: none;
+            transition: color 0.3s var(--ease);
+        }
+
+        .foot-links a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -3px;
+            height: 1px;
+            background: var(--vermilion);
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.35s var(--ease);
+        }
+
+        .foot-links a:hover,
+        .foot-links a:focus-visible {
+            color: var(--vermilion);
+        }
+
+        .foot-links a:hover::after,
+        .foot-links a:focus-visible::after {
+            transform: scaleX(1);
+        }
+
+        .foot-links .dot {
+            opacity: 0.35;
         }
 
         /* 墨迹入场 */
@@ -788,7 +911,7 @@
                             <option value="">城市</option>
                         </select>
                     </div>
-                    <button type="button" id="themeToggle" class="theme-toggle" aria-label="切换深色模式">月</button>
+                    <button type="button" id="themeToggle" class="theme-toggle" aria-label="切换深色模式" title="切换明暗 · 快捷键 T">月</button>
                 </div>
             </header>
 
@@ -808,8 +931,16 @@
                 <div class="time-container" aria-label="当前时间">
                     <span class="time-label">此刻</span>
                     <div class="time-display" id="time-display" role="timer" aria-label="时间">--:--:--</div>
-                    <div class="date-display" id="date-display" aria-label="日期">--年--月--日</div>
+                    <div class="date-row">
+                        <div class="date-display" id="date-display" aria-label="日期">--年--月--日</div>
+                        <span class="solar-term" id="solar-term" aria-hidden="true"></span>
+                    </div>
                 </div>
+
+                <p class="daily-verse">
+                    <span class="quote" id="daily-quote">「山中何事？松花酿酒，春水煎茶。」</span>
+                    <span class="from" id="daily-from">元 · 张可久《人月圆》</span>
+                </p>
             </section>
 
             <section class="weather-container" aria-label="天气信息">
@@ -818,10 +949,14 @@
                         <span class="label">天气</span>
                         <div class="location" id="location" aria-label="城市">北京</div>
                     </div>
-                    <button type="button" class="refresh-btn" onclick="getWeatherData()" aria-label="刷新天气">刷新</button>
+                    <button type="button" class="refresh-btn" onclick="getWeatherData()" aria-label="刷新天气" title="刷新天气 · 快捷键 R">刷新</button>
                 </div>
-                <div class="weather-info">
-                    <div class="weather-icon" id="weather-icon" aria-hidden="true">☁️</div>
+                <div class="weather-info" aria-live="polite">
+                    <div class="weather-icon" id="weather-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 17.5a4.2 4.2 0 0 1-.5-8.37A6.2 6.2 0 0 1 18.3 10.5a3.7 3.7 0 0 1-.4 7H7Z"/>
+                        </svg>
+                    </div>
                     <div class="temperature" id="temperature" aria-label="温度">—</div>
                     <div class="weather-details">
                         <div class="weather-desc" id="weather-desc">待获取</div>
@@ -832,6 +967,11 @@
 
             <footer class="page-foot">
                 <span>愿长夜安宁</span>
+                <nav class="foot-links" aria-label="节日页面">
+                    <a href="gregorian.html">元旦</a>
+                    <span class="dot" aria-hidden="true">·</span>
+                    <a href="newyear.html">春节</a>
+                </nav>
                 <span>Goodnight · MMXXVI</span>
             </footer>
         </article>
@@ -868,12 +1008,45 @@
             window.location.href = 'newyear.html';
         };
 
+        // 每日诗句（按日期轮换，当天固定）
+        var DAILY_VERSES = [
+            { line: '山中何事？松花酿酒，春水煎茶。', from: '元 · 张可久《人月圆》' },
+            { line: '晚来天欲雪，能饮一杯无？', from: '唐 · 白居易《问刘十九》' },
+            { line: '星垂平野阔，月涌大江流。', from: '唐 · 杜甫《旅夜书怀》' },
+            { line: '明月松间照，清泉石上流。', from: '唐 · 王维《山居秋暝》' },
+            { line: '人闲桂花落，夜静春山空。', from: '唐 · 王维《鸟鸣涧》' },
+            { line: '今夜月明人尽望，不知秋思落谁家。', from: '唐 · 王建《十五夜望月》' },
+            { line: '疏影横斜水清浅，暗香浮动月黄昏。', from: '宋 · 林逋《山园小梅》' },
+            { line: '醉后不知天在水，满船清梦压星河。', from: '元 · 唐珙《题龙阳县青草湖》' },
+            { line: '晚风庭院落梅初，淡云来往月疏疏。', from: '宋 · 李清照《浣溪沙》' },
+            { line: '竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生。', from: '宋 · 苏轼《定风波》' },
+            { line: '觉后不知明月上，满身花影倩人扶。', from: '唐 · 陆龟蒙《和袭美春夕酒醒》' },
+            { line: '山中夜来月，到晓不曾看。', from: '金 · 元好问《倪庄中秋》' }
+        ];
+
+        function initDailyVerse() {
+            var now = new Date();
+            var dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+            var verse = DAILY_VERSES[dayOfYear % DAILY_VERSES.length];
+            document.getElementById('daily-quote').textContent = '「' + verse.line + '」';
+            document.getElementById('daily-from').textContent = verse.from;
+        }
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function () {
             DarkModeModule.init();
             TimeModule.start();
             initCitySelector();
             getWeatherData();
+            initDailyVerse();
+
+            // 快捷键：T 切换明暗，R 刷新天气
+            document.addEventListener('keydown', function (e) {
+                if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+                if (e.target.tagName && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+                if (e.key === 't' || e.key === 'T') DarkModeModule.toggle();
+                if (e.key === 'r' || e.key === 'R') getWeatherData();
+            });
         });
 
         // 注册 Service Worker

@@ -41,10 +41,22 @@ const regionMap = {
     '华南地区': '广州', '西北地区': '西安', '西南地区': '成都', '东北地区': '沈阳'
 };
 
+// 线条天气图标：与宋韵版式统一，避免 emoji 破坏质感
 const weatherIcons = {
-    '晴': '☀️', '多云': '☁️', '阴': '☁️', '小雨': '🌦️', '中雨': '🌧️',
-    '大雨': '⛈️', '暴雨': '⛈️', '雷阵雨': '⛈️', '小雪': '❄️', '中雪': '❄️',
-    '大雪': '❄️', '雾': '🌫️', '霾': '🌫️', 'default': '☀️'
+    '晴': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="1" fill="var(--vermilion)" stroke="none"/><path d="M12 2.8v2.2M12 19v2.2M2.8 12h2.2M19 12h2.2M5.5 5.5l1.6 1.6M16.9 16.9l1.6 1.6M18.5 5.5l-1.6 1.6M7.1 16.9l-1.6 1.6"/></svg>`,
+    '多云': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.6" cy="8.4" r="3.1"/><path d="M8.6 3.4v1.3M3.6 8.4h1.3M4.9 4.7l.9.9M12.3 4.7l-.9.9"/><path d="M8.4 19.6a4 4 0 0 1-.4-7.98A5.9 5.9 0 0 1 18.7 12.2a3.5 3.5 0 0 1-.5 7.4H8.4Z"/></svg>`,
+    '阴': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 18.6 10.6a3.8 3.8 0 0 1-.6 7.4H7Z"/><path d="M9 21h9" opacity=".45"/></svg>`,
+    '小雨': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 18.6 8.6a3.8 3.8 0 0 1-.6 7.4H7Z"/><path d="M9 19.2l-1 2.2M13 19.2l-1 2.2M17 19.2l-1 2.2"/></svg>`,
+    '中雨': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15.6a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 18.6 8.2a3.8 3.8 0 0 1-.6 7.4H7Z"/><path d="M8 18.8l-1.2 2.6M12 18.8l-1.2 2.6M16 18.8l-1.2 2.6M20 18.8l-1.2 2.6"/></svg>`,
+    '大雨': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15.4a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 18.6 8a3.8 3.8 0 0 1-.6 7.4H7Z"/><path d="M8.4 18.4l-1.6 3.4M13 18.4l-1.6 3.4M17.6 18.4l-1.6 3.4"/></svg>`,
+    '暴雨': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14.8a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 18.6 7.4a3.8 3.8 0 0 1-.6 7.4H7Z"/><path d="M8.2 17.4l-1.4 3M12 17.4l-1.4 3M15.8 17.4l-1.4 3"/><path d="M15.5 16.6l2 3.2h-1.5l1.8 3" stroke="var(--vermilion)"/></svg>`,
+    '雷阵雨': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14.4a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 18.6 7a3.8 3.8 0 0 1-.6 7.4H7Z"/><path d="M13.4 16.2l-2.2 3.4h1.9l-1.1 3.2 3.1-4.2h-1.9l1.2-2.4" stroke="var(--vermilion)"/></svg>`,
+    '小雪': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14.4a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 18.6 7a3.8 3.8 0 0 1-.6 7.4H7Z"/><path d="M12 18.4v4M10 19.4l4 2M14 19.4l-4 2"/></svg>`,
+    '中雪': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 17.6 6.6a3.8 3.8 0 0 1-.6 7.4H6Z"/><path d="M8.4 18.2v3.4M6.9 19l3 1.7M10 19l-3 1.7M15.4 18.2v3.4M13.9 19l3 1.7M17 19l-3 1.7"/></svg>`,
+    '大雪': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13.4v7.4M8.8 15.3l6.4 3.6M15.2 15.3l-6.4 3.6M5.5 12.6a4.3 4.3 0 0 1-.5-8.57A6.4 6.4 0 0 1 17.1 5.2a3.8 3.8 0 0 1-.6 7.4H5.5Z" opacity=".55"/></svg>`,
+    '雾': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M6 12h12M4 16h16M7 20h10"/><circle cx="12" cy="12" r="1" fill="var(--vermilion)" stroke="none"/></svg>`,
+    '霾': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M6 11.5h12M4 15.5h16M7 19.5h10"/><path d="M18.8 3.2l2 2M20.8 3.2l-2 2" stroke="var(--vermilion)" opacity=".8"/></svg>`,
+    'default': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="1" fill="var(--vermilion)" stroke="none"/><path d="M12 2.8v2.2M12 19v2.2M2.8 12h2.2M19 12h2.2"/></svg>`
 };
 
 let currentWeatherData = null;
@@ -173,7 +185,7 @@ function updateWeather(d) {
     setTimeout(() => {
         document.getElementById('location').textContent = d.city;
         document.getElementById('temperature').textContent = d.temperature + '°C';
-        document.getElementById('weather-icon').textContent = weatherIcons[d.weatherType] || weatherIcons.default;
+        document.getElementById('weather-icon').innerHTML = weatherIcons[d.weatherType] || weatherIcons.default;
         document.getElementById('weather-desc').textContent = d.description;
         document.getElementById('humidity-wind').textContent = `湿度 ${d.humidity}% · 风速 ${d.windSpeed} 级`;
         c.style.transform = 'translateY(0)';

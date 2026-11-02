@@ -39,6 +39,54 @@
             color-scheme: dark;
         }
 
+        ::selection {
+            background: var(--vermilion);
+            color: var(--paper);
+        }
+
+        /* 返回入口 */
+        .home-link {
+            position: fixed;
+            top: clamp(1.5rem, 3.2vh, 2.3rem);
+            left: clamp(1.6rem, 4vw, 3rem);
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-serif);
+            font-size: 0.62rem;
+            letter-spacing: 0.3em;
+            color: var(--ink-mute);
+            text-decoration: none;
+            transition: color 0.35s var(--ease);
+        }
+
+        .home-link .mark {
+            display: inline-grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
+            border: 1px solid var(--line);
+            color: var(--vermilion);
+            font-size: 0.72rem;
+            letter-spacing: 0;
+            transition: border-color 0.35s var(--ease), transform 0.35s var(--ease);
+        }
+
+        .home-link:hover {
+            color: var(--ink);
+        }
+
+        .home-link:hover .mark {
+            border-color: var(--vermilion);
+            transform: rotate(-6deg);
+        }
+
+        .home-link:focus-visible {
+            outline: 1px solid var(--vermilion);
+            outline-offset: 4px;
+        }
+
         body {
             position: relative;
             min-height: 100vh;
@@ -517,6 +565,10 @@
     </style>
 </head>
 <body>
+    <a class="home-link" href="index.html" aria-label="返回晚安首页">
+        <span class="mark" aria-hidden="true">归</span>
+        <span>晚安</span>
+    </a>
     <div class="frame" aria-hidden="true"></div>
     <div class="ink-wash" aria-hidden="true"></div>
     <div class="ghost-seal" aria-hidden="true">春</div>

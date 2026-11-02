@@ -1,4 +1,4 @@
-const CACHE_NAME = 'goodnight-v2';
+const CACHE_NAME = 'goodnight-v3';
 const urlsToCache = [
     '/Helloweb/',
     '/Helloweb/index.html',
