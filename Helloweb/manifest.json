@@ -4,8 +4,8 @@
     "description": "温馨的晚安问候网页，显示时间和天气",
     "start_url": "/Helloweb/index.html",
     "display": "standalone",
-    "background_color": "#f3eee4",
-    "theme_color": "#a98444",
+    "background_color": "#f2ebdc",
+    "theme_color": "#a83b2b",
     "icons": [
         {
             "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>",

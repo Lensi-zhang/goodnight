@@ -33,7 +33,7 @@ const DarkModeModule = {
 
         const toggleBtn = document.getElementById('themeToggle');
         if (toggleBtn) {
-            toggleBtn.textContent = isDark ? '☀' : '☾';
+            toggleBtn.textContent = isDark ? '日' : '月';
             toggleBtn.setAttribute('aria-label', isDark ? '切换到浅色模式' : '切换到深色模式');
         }
     },

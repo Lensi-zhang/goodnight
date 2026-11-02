@@ -17,7 +17,15 @@ const TimeModule = {
     },
 
     formatDate(now) {
-        return `${now.getFullYear()}年${(now.getMonth() + 1 < 10 ? '0' : '')}${now.getMonth() + 1}月${(now.getDate() < 10 ? '0' : '')}${now.getDate()}日`;
+        const digits = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+        const toCN = (n) => {
+            if (n === 10) return '十';
+            if (n < 10) return digits[n];
+            if (n < 20) return '十' + digits[n - 10];
+            return digits[Math.floor(n / 10)] + '十' + (n % 10 ? digits[n % 10] : '');
+        };
+        const year = String(now.getFullYear()).split('').map(d => digits[+d]).join('');
+        return `${year}年${toCN(now.getMonth() + 1)}月${toCN(now.getDate())}日`;
     },
 
     update() {

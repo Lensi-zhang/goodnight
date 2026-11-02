@@ -108,6 +108,12 @@ function cleanup(cb) {
 }
 
 function getWeatherByCity(city) {
+    if (typeof API_CONFIG === 'undefined' || !API_CONFIG.amapApiKey || /^YOUR_/.test(API_CONFIG.amapApiKey)) {
+        const el = document.getElementById('location');
+        if (el) el.textContent = city;
+        return;
+    }
+
     const amapApiKey = API_CONFIG.amapApiKey;
     const url = `https://restapi.amap.com/v3/geocode/geo?address=${encodeURIComponent(city)}&key=${amapApiKey}`;
     const cb = 'gc_' + Date.now();
