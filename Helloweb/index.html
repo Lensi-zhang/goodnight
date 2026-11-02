@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="温馨的晚安问候网页，显示实时时间和天气">
+    <meta name="theme-color" content="#f3eee4">
+    <title>晚安 · Goodnight</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+        // 首屏前同步主题，避免闪烁
+        (function () {
+            try {
+                var saved = localStorage.getItem('goodnight_dark_mode');
+                var isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+            } catch (e) { }
+        })();
+    </script>
+    <style>
+        :root {
+            --bg: #f3eee4;
+            --bg-deep: #e8e0d1;
+            --ink: #17150f;
+            --ink-soft: #514b41;
+            --ink-mute: #6f675a;
+            --gold: #a98444;
+            --gold-soft: #c3a76e;
+            --line: rgba(23, 21, 15, 0.17);
+            --line-soft: rgba(23, 21, 15, 0.08);
+            --card: rgba(255, 252, 246, 0.42);
+            --frame: rgba(23, 21, 15, 0.2);
+            --glow-a: rgba(198, 164, 96, 0.24);
+            --glow-b: rgba(150, 112, 52, 0.12);
+            --grain: 0.05;
+            --font-serif: "Cormorant Garamond", "Noto Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", serif;
+            --font-sans: "Jost", "Noto Sans SC", "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0e0d0b;
+            --bg-deep: #16130e;
+            --ink: #ece6d8;
+            --ink-soft: #bcb4a4;
+            --ink-mute: #837b6d;
+            --gold: #c7a663;
+            --gold-soft: #dcc08a;
+            --line: rgba(236, 230, 216, 0.16);
+            --line-soft: rgba(236, 230, 216, 0.07);
+            --card: rgba(255, 255, 255, 0.03);
+            --frame: rgba(199, 166, 99, 0.24);
+            --glow-a: rgba(199, 166, 99, 0.16);
+            --glow-b: rgba(112, 70, 32, 0.16);
+            --grain: 0.07;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(3.5rem, 8vh, 6rem) clamp(1.4rem, 5vw, 4rem);
+            overflow-x: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.5s var(--ease), color 0.5s var(--ease);
+        }
+
+        /* 背景光晕与纸张层次 */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -15%;
+            z-index: -3;
+            background:
+                radial-gradient(58% 46% at 84% 6%, var(--glow-a), transparent 68%),
+                radial-gradient(52% 42% at 6% 96%, var(--glow-b), transparent 72%),
+                linear-gradient(168deg, var(--bg) 0%, var(--bg-deep) 100%);
+            transition: background 0.5s var(--ease);
+        }
+
+        /* 细腻颗粒质感 */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            opacity: var(--grain);
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.6'/></svg>");
+        }
+
+        :root[data-theme="dark"] body::after {
+            mix-blend-mode: screen;
+        }
+
+        /* 极简外框 */
+        .frame {
+            position: fixed;
+            inset: 18px;
+            z-index: 2;
+            border: 1px solid var(--frame);
+            pointer-events: none;
+            transition: border-color 0.5s var(--ease);
+        }
+
+        .frame::before,
+        .frame::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 1px solid var(--gold);
+            opacity: 0.55;
+        }
+
+        .frame::before {
+            top: -1px;
+            left: -1px;
+            border-right: 0;
+            border-bottom: 0;
+        }
+
+        .frame::after {
+            bottom: -1px;
+            right: -1px;
+            border-left: 0;
+            border-top: 0;
+        }
+
+        /* 巨大月轮装饰 */
+        .halo {
+            position: fixed;
+            top: -18vh;
+            right: -14vw;
+            width: min(68vmin, 560px);
+            aspect-ratio: 1;
+            z-index: -1;
+            border: 1px solid var(--frame);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .halo::after {
+            content: "";
+            position: absolute;
+            inset: 12%;
+            border: 1px solid var(--line-soft);
+            border-radius: 50%;
+        }
+
+        .skip-link {
+            position: fixed;
+            top: -60px;
+            left: 24px;
+            z-index: 10;
+            padding: 10px 18px;
+            background: var(--ink);
+            color: var(--bg);
+            font-size: 0.78rem;
+            letter-spacing: 0.2em;
+            text-decoration: none;
+            transition: top 0.2s var(--ease);
+        }
+
+        .skip-link:focus {
+            top: 24px;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 980px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        /* 顶部品牌栏 */
+        .masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding-bottom: 1.1rem;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .brand-diamond {
+            width: 7px;
+            height: 7px;
+            border: 1px solid var(--gold);
+            transform: rotate(45deg);
+            flex: 0 0 auto;
+        }
+
+        .brand-name {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: 1.32rem;
+            letter-spacing: 0.06em;
+            line-height: 1;
+        }
+
+        .brand-cn {
+            font-size: 0.66rem;
+            letter-spacing: 0.42em;
+            color: var(--ink-mute);
+            padding-left: 0.7rem;
+            border-left: 1px solid var(--line);
+        }
+
+        .masthead-right {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+        }
+
+        .select-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .select-wrap::after {
+            content: "▾";
+            position: absolute;
+            right: 2px;
+            top: 50%;
+            transform: translateY(-54%);
+            color: var(--gold);
+            font-size: 0.6rem;
+            pointer-events: none;
+        }
+
+        .city-selector {
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            border: 0;
+            border-bottom: 1px solid var(--line);
+            color: var(--ink-soft);
+            font-family: var(--font-sans);
+            font-size: 0.68rem;
+            font-weight: 400;
+            letter-spacing: 0.22em;
+            padding: 5px 20px 6px 1px;
+            cursor: pointer;
+            max-width: 8.5rem;
+            transition: border-color 0.3s var(--ease), color 0.3s var(--ease);
+        }
+
+        .city-selector:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .city-selector:focus-visible {
+            outline: 1px solid var(--gold);
+            outline-offset: 4px;
+        }
+
+        .city-selector option {
+            background: var(--bg);
+            color: var(--ink);
+            letter-spacing: 0.05em;
+        }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: transparent;
+            color: var(--ink-soft);
+            font-family: var(--font-serif);
+            font-size: 1.02rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease);
+        }
+
+        .theme-toggle:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+            transform: rotate(12deg);
+        }
+
+        .theme-toggle:focus-visible {
+            outline: 1px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        /* 主视觉 */
+        .hero {
+            padding-top: clamp(2.6rem, 7vh, 5.2rem);
+            text-align: left;
+        }
+
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            font-size: 0.63rem;
+            font-weight: 400;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink-mute);
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 34px;
+            height: 1px;
+            background: var(--gold);
+            opacity: 0.9;
+        }
+
+        h1 {
+            margin: 1.15rem 0 0;
+            font-family: var(--font-serif);
+            font-weight: 300;
+            font-size: clamp(3.5rem, 9.5vw, 7.4rem);
+            line-height: 1.04;
+            letter-spacing: 0.17em;
+            color: var(--ink);
+            transition: color 0.5s var(--ease), opacity 0.35s var(--ease);
+        }
+
+        .greeting {
+            max-width: 30rem;
+            margin-top: 1.5rem;
+            font-size: 0.92rem;
+            font-weight: 300;
+            line-height: 2;
+            letter-spacing: 0.08em;
+            color: var(--ink-soft);
+            transition: color 0.5s var(--ease), opacity 0.35s var(--ease);
+        }
+
+        .ornament {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: clamp(2rem, 5vh, 3.4rem) 0 clamp(2rem, 4.5vh, 3rem);
+            max-width: 420px;
+        }
+
+        .ornament span {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .ornament i {
+            width: 5px;
+            height: 5px;
+            border: 1px solid var(--gold);
+            transform: rotate(45deg);
+            flex: 0 0 auto;
+        }
+
+        .time-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .time-display {
+            font-family: var(--font-serif);
+            font-weight: 400;
+            font-size: clamp(2.7rem, 6.4vw, 4.9rem);
+            line-height: 1;
+            letter-spacing: 0.07em;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink);
+            transition: color 0.5s var(--ease);
+        }
+
+        .date-display {
+            font-size: 0.68rem;
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: var(--ink-mute);
+            transition: color 0.5s var(--ease), opacity 0.35s var(--ease);
+        }
+
+        /* 天气数据条 */
+        .weather-container {
+            margin-top: clamp(2.2rem, 6vh, 3.8rem);
+            padding: 1.5rem 0 1.35rem;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            transition: border-color 0.4s var(--ease), opacity 0.4s var(--ease), transform 0.4s var(--ease);
+        }
+
+        .weather-container:hover {
+            border-color: var(--gold-soft);
+        }
+
+        .weather-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1.2rem;
+        }
+
+        .weather-heading {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .label {
+            font-size: 0.6rem;
+            font-weight: 400;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            color: var(--ink-mute);
+        }
+
+        .location {
+            font-family: var(--font-serif);
+            font-size: 1.42rem;
+            font-weight: 400;
+            letter-spacing: 0.14em;
+            color: var(--ink);
+            transition: color 0.5s var(--ease);
+        }
+
+        .refresh-btn {
+            appearance: none;
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--ink-soft);
+            font-family: var(--font-sans);
+            font-size: 0.62rem;
+            font-weight: 400;
+            letter-spacing: 0.26em;
+            padding: 0.62rem 1.1rem 0.58rem;
+            cursor: pointer;
+            transition: color 0.35s var(--ease), border-color 0.35s var(--ease), background 0.35s var(--ease);
+        }
+
+        .refresh-btn:hover {
+            color: var(--bg);
+            border-color: var(--ink);
+            background: var(--ink);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(1px);
+        }
+
+        .refresh-btn:focus-visible {
+            outline: 1px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        .weather-info {
+            display: grid;
+            grid-template-columns: auto auto 1fr;
+            align-items: center;
+            gap: clamp(1.2rem, 3vw, 2.4rem);
+            margin-top: 1.35rem;
+        }
+
+        .weather-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            font-size: 1.15rem;
+            filter: grayscale(0.85) sepia(0.25) contrast(0.9);
+            opacity: 0.9;
+            transition: border-color 0.4s var(--ease);
+        }
+
+        :root[data-theme="dark"] .weather-icon {
+            filter: grayscale(0.6) brightness(1.5) sepia(0.4);
+            border-color: var(--line);
+        }
+
+        .temperature {
+            font-family: var(--font-serif);
+            font-weight: 400;
+            font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+            line-height: 1;
+            letter-spacing: 0.04em;
+            font-variant-numeric: tabular-nums;
+            color: var(--gold);
+            transition: color 0.5s var(--ease);
+        }
+
+        .weather-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            min-width: 0;
+            padding-left: clamp(1rem, 2.4vw, 1.8rem);
+            border-left: 1px solid var(--line-soft);
+        }
+
+        .weather-desc {
+            font-size: 0.88rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            color: var(--ink-soft);
+            transition: color 0.5s var(--ease);
+        }
+
+        .humidity-wind {
+            font-size: 0.64rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: var(--ink-mute);
+            transition: color 0.5s var(--ease);
+        }
+
+        /* 页脚 */
+        .page-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: clamp(1.6rem, 4vh, 2.4rem);
+            font-size: 0.58rem;
+            letter-spacing: 0.28em;
+            color: var(--ink-mute);
+            text-transform: uppercase;
+        }
+
+        /* 入场动画 */
+        .masthead,
+        .eyebrow,
+        h1,
+        .greeting,
+        .ornament,
+        .time-container,
+        .weather-container,
+        .page-foot {
+            animation: rise 1s var(--ease) backwards;
+        }
+
+        .eyebrow { animation-delay: 0.15s; }
+        h1 { animation-delay: 0.28s; }
+        .greeting { animation-delay: 0.42s; }
+        .ornament { animation-delay: 0.54s; }
+        .time-container { animation-delay: 0.66s; }
+        .weather-container { animation-delay: 0.8s; }
+        .page-foot { animation-delay: 0.94s; }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 640px) {
+            .frame {
+                inset: 10px;
+            }
+
+            .halo {
+                top: -10vh;
+                right: -30vw;
+                width: 74vmin;
+            }
+
+            .masthead {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .masthead-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .weather-header {
+                align-items: flex-end;
+            }
+
+            .weather-info {
+                grid-template-columns: auto 1fr;
+                row-gap: 0.9rem;
+            }
+
+            .weather-details {
+                grid-column: 1 / -1;
+                padding-left: 0;
+                padding-top: 0.9rem;
+                border-left: 0;
+                border-top: 1px solid var(--line-soft);
+            }
+
+            .page-foot {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">跳转到主要内容</a>
+    <div class="frame" aria-hidden="true"></div>
+    <div class="halo" aria-hidden="true"></div>
+
+    <main id="main-content" role="main">
+        <article class="container" role="article" aria-labelledby="greeting-title">
+            <header class="masthead">
+                <a class="brand" href="index.html" aria-label="晚安问候首页">
+                    <span class="brand-diamond" aria-hidden="true"></span>
+                    <span class="brand-name">Goodnight</span>
+                    <span class="brand-cn">晚安</span>
+                </a>
+                <div class="masthead-right">
+                    <div class="select-wrap">
+                        <label for="citySelector" class="visually-hidden">选择城市</label>
+                        <select id="citySelector" class="city-selector" aria-label="城市选择">
+                            <option value="">城市</option>
+                        </select>
+                    </div>
+                    <button type="button" id="themeToggle" class="theme-toggle" aria-label="切换深色模式">☾</button>
+                </div>
+            </header>
+
+            <section class="hero" aria-labelledby="greeting-title">
+                <p class="eyebrow">A Quiet Evening · 夜之序曲</p>
+                <h1 id="greeting-title">晚安</h1>
+                <p id="greeting" class="greeting" aria-live="polite">愿你有一个宁静美好的夜晚</p>
+
+                <div class="ornament" aria-hidden="true">
+                    <span></span><i></i><span></span>
+                </div>
+
+                <div class="time-container" aria-label="当前时间">
+                    <div class="time-display" id="time-display" role="timer" aria-label="时间">--:--:--</div>
+                    <div class="date-display" id="date-display" aria-label="日期">----年--月--日</div>
+                </div>
+            </section>
+
+            <section class="weather-container" aria-label="天气信息">
+                <div class="weather-header">
+                    <div class="weather-heading">
+                        <span class="label">Weather · 天气</span>
+                        <div class="location" id="location" aria-label="城市">北京</div>
+                    </div>
+                    <button type="button" class="refresh-btn" onclick="getWeatherData()" aria-label="刷新天气">刷新数据</button>
+                </div>
+                <div class="weather-info">
+                    <div class="weather-icon" id="weather-icon" aria-hidden="true">☁️</div>
+                    <div class="temperature" id="temperature" aria-label="温度">22°C</div>
+                    <div class="weather-details">
+                        <div class="weather-desc" id="weather-desc">多云</div>
+                        <div class="humidity-wind" id="humidity-wind">湿度 55% · 风速 2 级</div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="page-foot">
+                <span>愿长夜安宁</span>
+                <span>Goodnight · MMXXVI</span>
+            </footer>
+        </article>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="lunar.js"></script>
+    <script src="darkmode.js"></script>
+    <script src="time.js"></script>
+    <script src="weather.js"></script>
+    <script>
+        // 农历新年或公历新年期间跳转到对应页面
+        (function () {
+            var now = new Date();
+            var m = now.getMonth() + 1;
+            var d = now.getDate();
+            // 公历新年：12月31日 - 1月1日
+            if ((m === 12 && d === 31) || (m === 1 && d === 1)) {
+                window.location.href = 'gregorian.html';
+                return;
+            }
+            // 农历新年：新年前7天 ~ 新年后15天
+            if (LunarNewYear.isDuringNewYear()) {
+                window.location.href = 'newyear.html';
+                return;
+            }
+        })();
+
+        // 临时测试入口 - 手动跳转
+        window.openGregorianNewYear = function () {
+            window.location.href = 'gregorian.html';
+        };
+        window.openLunarNewYear = function () {
+            window.location.href = 'newyear.html';
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            DarkModeModule.init();
+            TimeModule.start();
+            initCitySelector();
+            getWeatherData();
+        });
+
+        // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function (registration) {
+                        console.log('SW registered:', registration.scope);
+                    })
+                    .catch(function (error) {
+                        console.log('SW registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

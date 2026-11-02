@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0a08">
+    <title>新年快乐 · New Year</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0a08;
+            --bg-deep: #050504;
+            --ink: #f0e9dc;
+            --ink-soft: #b8b0a1;
+            --ink-mute: #7c7467;
+            --gold: #c7a663;
+            --gold-soft: #e0c38b;
+            --line: rgba(240, 233, 220, 0.16);
+            --line-soft: rgba(240, 233, 220, 0.07);
+            --frame: rgba(199, 166, 99, 0.26);
+            --font-serif: "Cormorant Garamond", "Noto Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", serif;
+            --font-sans: "Jost", "Noto Sans SC", "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            color-scheme: dark;
+        }
+
+        body {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: clamp(4rem, 10vh, 7rem) clamp(1.3rem, 6vw, 4rem);
+            overflow-x: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -20%;
+            z-index: -2;
+            background:
+                radial-gradient(50% 42% at 50% 108%, rgba(199, 166, 99, 0.22), transparent 70%),
+                radial-gradient(38% 32% at 88% 4%, rgba(140, 96, 40, 0.18), transparent 70%),
+                linear-gradient(175deg, var(--bg) 0%, var(--bg-deep) 100%);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0.07;
+            mix-blend-mode: screen;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.6'/></svg>");
+        }
+
+        .frame {
+            position: fixed;
+            inset: 18px;
+            z-index: 2;
+            border: 1px solid var(--frame);
+            pointer-events: none;
+        }
+
+        .frame::before,
+        .frame::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 1px solid var(--gold);
+            opacity: 0.6;
+        }
+
+        .frame::before {
+            top: -1px;
+            left: -1px;
+            border-right: 0;
+            border-bottom: 0;
+        }
+
+        .frame::after {
+            bottom: -1px;
+            right: -1px;
+            border-left: 0;
+            border-top: 0;
+        }
+
+        .halo {
+            position: fixed;
+            left: -18vw;
+            bottom: -28vh;
+            width: min(72vmin, 620px);
+            aspect-ratio: 1;
+            z-index: -1;
+            border: 1px solid rgba(199, 166, 99, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .halo::after {
+            content: "";
+            position: absolute;
+            inset: 14%;
+            border: 1px solid var(--line-soft);
+            border-radius: 50%;
+        }
+
+        .stars {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            contain: layout paint;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(240, 233, 220, 0.75);
+            border-radius: 50%;
+            will-change: opacity;
+            animation: twinkle 3.2s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.18; }
+            to { opacity: 0.85; }
+        }
+
+        .stage {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 860px;
+            text-align: center;
+            animation: rise 1.1s var(--ease) backwards;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.9rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.36em;
+            text-transform: uppercase;
+            color: var(--ink-mute);
+            animation: rise 1s var(--ease) 0.15s backwards;
+        }
+
+        .eyebrow::before,
+        .eyebrow::after {
+            content: "";
+            width: 30px;
+            height: 1px;
+            background: var(--gold);
+            opacity: 0.8;
+        }
+
+        h1 {
+            margin-top: 1.6rem;
+            font-family: var(--font-serif);
+            font-weight: 300;
+            font-size: clamp(2.2rem, 5.2vw, 3.4rem);
+            letter-spacing: 0.3em;
+            line-height: 1.1;
+            color: var(--ink);
+            animation: rise 1.1s var(--ease) 0.28s backwards;
+        }
+
+        .year-display {
+            margin-top: 1.4rem;
+            font-family: var(--font-serif);
+            font-weight: 300;
+            font-size: clamp(4.6rem, 15vw, 10rem);
+            line-height: 0.95;
+            letter-spacing: 0.08em;
+            font-variant-numeric: tabular-nums;
+            color: var(--gold-soft);
+            animation: rise 1.2s var(--ease) 0.4s backwards;
+        }
+
+        .year-label {
+            margin-top: 0.8rem;
+            font-size: 0.58rem;
+            letter-spacing: 0.36em;
+            text-transform: uppercase;
+            color: var(--ink-mute);
+            animation: rise 1s var(--ease) 0.5s backwards;
+        }
+
+        .countdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            margin: clamp(2.4rem, 6vh, 3.6rem) auto 0;
+            max-width: 620px;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            animation: rise 1.1s var(--ease) 0.6s backwards;
+        }
+
+        .countdown-item {
+            position: relative;
+            padding: 1.5rem 0.5rem 1.35rem;
+            contain: layout style;
+        }
+
+        .countdown-item + .countdown-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 1.5rem;
+            bottom: 1.35rem;
+            width: 1px;
+            background: var(--line-soft);
+        }
+
+        .countdown-item .number {
+            font-family: var(--font-serif);
+            font-weight: 400;
+            font-size: clamp(2.1rem, 5vw, 3.2rem);
+            line-height: 1;
+            letter-spacing: 0.04em;
+            font-variant-numeric: tabular-nums;
+            color: var(--gold);
+        }
+
+        .countdown-item .label {
+            margin-top: 0.7rem;
+            font-size: 0.58rem;
+            letter-spacing: 0.3em;
+            color: var(--ink-mute);
+        }
+
+        .greeting {
+            max-width: 34rem;
+            margin: clamp(1.8rem, 4vh, 2.6rem) auto 0;
+            min-height: 3.6rem;
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 2;
+            letter-spacing: 0.1em;
+            color: var(--ink-soft);
+            padding: 0 1rem;
+            transition: opacity 0.5s var(--ease);
+            animation: rise 1s var(--ease) 0.7s backwards;
+        }
+
+        .celebrate-btn {
+            margin-top: clamp(1.4rem, 4vh, 2.2rem);
+            appearance: none;
+            border: 1px solid var(--frame);
+            background: transparent;
+            color: var(--gold-soft);
+            font-family: var(--font-sans);
+            font-size: 0.66rem;
+            font-weight: 400;
+            letter-spacing: 0.34em;
+            text-transform: uppercase;
+            padding: 0.95rem 2.1rem 0.9rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: color 0.4s var(--ease), border-color 0.4s var(--ease), background 0.4s var(--ease), box-shadow 0.4s var(--ease);
+            animation: rise 1s var(--ease) 0.8s backwards;
+        }
+
+        .celebrate-btn:hover {
+            color: #171308;
+            background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+            border-color: var(--gold);
+            box-shadow: 0 12px 40px rgba(199, 166, 99, 0.18);
+        }
+
+        .celebrate-btn:active {
+            transform: translateY(1px);
+        }
+
+        .celebrate-btn:focus-visible {
+            outline: 1px solid var(--gold);
+            outline-offset: 4px;
+        }
+
+        .page-foot {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 860px;
+            margin-top: clamp(2.6rem, 7vh, 4rem);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            font-size: 0.56rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--ink-mute);
+            animation: rise 1s var(--ease) 0.9s backwards;
+        }
+
+        /* 彩带 - 细长金色纸片 */
+        .confetti {
+            position: fixed;
+            top: 0;
+            width: 3px;
+            height: 14px;
+            border-radius: 1px;
+            animation: fall 3s linear forwards;
+            z-index: 100;
+            will-change: transform, opacity;
+            contain: layout style;
+        }
+
+        @keyframes fall {
+            0% { transform: translate3d(0, -12vh, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate3d(0, 108vh, 0) rotate(720deg); opacity: 0; }
+        }
+
+        /* 上升的金色圆环 */
+        .balloon {
+            position: fixed;
+            bottom: 0;
+            width: 14px;
+            height: 18px;
+            border: 1px solid var(--gold);
+            border-radius: 50% 50% 50% 50%;
+            opacity: 0.55;
+            animation: float 5s ease-in forwards;
+            z-index: 90;
+            will-change: transform, opacity;
+            contain: layout style;
+        }
+
+        .balloon::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 1px;
+            height: 18px;
+            background: linear-gradient(var(--gold), transparent);
+        }
+
+        @keyframes float {
+            0% { transform: translate3d(0, 10vh, 0) rotate(-4deg); opacity: 0; }
+            15% { opacity: 0.55; }
+            100% { transform: translate3d(0, -105vh, 0) rotate(5deg); opacity: 0; }
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .frame { inset: 10px; }
+
+            h1 { letter-spacing: 0.22em; }
+
+            .countdown-item { padding: 1.15rem 0.3rem 1.05rem; }
+
+            .countdown-item + .countdown-item::before {
+                top: 1.15rem;
+                bottom: 1.05rem;
+            }
+
+            .countdown-item .number { font-size: 1.8rem; }
+
+            .page-foot {
+                align-items: center;
+                flex-direction: column;
+                gap: 0.7rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="frame" aria-hidden="true"></div>
+    <div class="halo" aria-hidden="true"></div>
+    <div class="stars" id="stars" aria-hidden="true"></div>
+
+    <main class="stage">
+        <p class="eyebrow">January the First · 元旦</p>
+        <h1>新年快乐</h1>
+        <div class="year-display" id="yearDisplay"></div>
+        <div class="year-label">A New Year Begins</div>
+        <div class="countdown" id="countdown" aria-label="新年倒计时"></div>
+        <div class="greeting" id="greeting" aria-live="polite"></div>
+        <button class="celebrate-btn" id="celebrateBtn" type="button">Celebrate · 庆祝新年</button>
+    </main>
+
+    <footer class="page-foot" aria-hidden="true">
+        <span>愿岁并谢 · 与长友兮</span>
+        <span>Happy New Year</span>
+    </footer>
+
+    <script>
+        (function () {
+            const greetings = [
+                "新年新气象，万事皆如意。",
+                "愿新的一年，所求皆所愿，所行化坦途。",
+                "岁岁常欢愉，年年皆胜意。",
+                "愿你新年快乐，阖家幸福，万事顺遂。",
+                "新年到，福气到，愿你好运连连。",
+                "新的一年，愿你心中有爱，眼中有光。",
+                "新年伊始，喜乐无限。",
+                "愿新年胜旧年，欢愉且胜意。",
+                "愿一切美好，如期而至。",
+                "新年快乐，未来可期。"
+            ];
+
+            const STAR_COUNT = 60;
+            const CONFETTI_COUNT = 34;
+            const BALLOON_COUNT = 10;
+
+            function createStars() {
+                const c = document.getElementById('stars');
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    const s = document.createElement('div');
+                    s.className = 'star';
+                    const size = Math.random() * 1.6 + 0.8;
+                    s.style.cssText = `
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${Math.random() * 100}%;
+                        top: ${Math.random() * 100}%;
+                        animation-delay: ${Math.random() * 3.2}s;
+                    `;
+                    fragment.appendChild(s);
+                }
+                c.appendChild(fragment);
+            }
+
+            function updateCountdown() {
+                const now = new Date();
+                let nextYear = now.getFullYear();
+                if (now.getMonth() === 11 && now.getDate() === 31) {
+                    nextYear = now.getFullYear() + 1;
+                }
+                let target = new Date(nextYear, 0, 1, 0, 0, 0);
+                if (now >= target) {
+                    target = new Date(nextYear + 1, 0, 1, 0, 0, 0);
+                }
+                const diff = target - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('countdown').innerHTML =
+                    `<div class="countdown-item"><div class="number">${days}</div><div class="label">天 DAYS</div></div>` +
+                    `<div class="countdown-item"><div class="number">${hours}</div><div class="label">时 HOURS</div></div>` +
+                    `<div class="countdown-item"><div class="number">${mins}</div><div class="label">分 MINUTES</div></div>` +
+                    `<div class="countdown-item"><div class="number">${secs}</div><div class="label">秒 SECONDS</div></div>`;
+                document.getElementById('yearDisplay').textContent = target.getFullYear();
+                document.title = `新年倒计时 · 还有${days}天`;
+            }
+
+            function updateGreeting() {
+                const el = document.getElementById('greeting');
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.textContent = greetings[Math.floor(Math.random() * greetings.length)];
+                    el.style.opacity = '1';
+                }, 300);
+            }
+
+            function celebrate() {
+                createConfetti();
+                createBalloons();
+            }
+
+            function createConfetti() {
+                const colors = ['#c7a663', '#e0c38b', '#f0e9dc', '#a98444', '#d8bd85', '#8b6f3a'];
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < CONFETTI_COUNT; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    const size = Math.random() * 7 + 6;
+                    confetti.style.cssText = `
+                        left: ${Math.random() * 100}%;
+                        background-color: ${colors[Math.floor(Math.random() * colors.length)]};
+                        animation-duration: ${Math.random() * 2 + 2.4}s;
+                        height: ${size}px;
+                        opacity: ${Math.random() * 0.5 + 0.5};
+                    `;
+                    fragment.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5000);
+                }
+                document.body.appendChild(fragment);
+            }
+
+            function createBalloons() {
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < BALLOON_COUNT; i++) {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'balloon';
+                    balloon.style.cssText = `
+                        left: ${Math.random() * 100}%;
+                        animation-duration: ${Math.random() * 2.5 + 4}s;
+                        animation-delay: ${Math.random() * 0.6}s;
+                    `;
+                    fragment.appendChild(balloon);
+                    setTimeout(() => balloon.remove(), 7000);
+                }
+                document.body.appendChild(fragment);
+            }
+
+            document.getElementById('celebrateBtn').addEventListener('click', celebrate);
+
+            createStars();
+            updateCountdown();
+            updateGreeting();
+            setInterval(updateCountdown, 1000);
+            setInterval(updateGreeting, 5000);
+            setTimeout(celebrate, 1200);
+        })();
+    </script>
+</body>
+</html>
